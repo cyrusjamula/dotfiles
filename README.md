@@ -45,6 +45,28 @@ Each configuration type is organized in its own directory with:
   - `install.ps1` - Windows PowerShell
 - Documentation (`README.md`)
 
+## Features
+
+### Git Aliases
+
+- Standard aliases: `st` (status), `co` (checkout), `br` (branch), etc.
+- **`clearOldBranches`** - Automatically clean up local branches that have been deleted from remote
+  - Switches to main branch
+  - Updates remote references and prunes
+  - Deletes local branches marked as "gone"
+
+### Shell Functions
+
+- **`clearOldBranches`** - Same functionality as Git alias, available as shell function
+- Automatic loading in new terminal sessions
+
+## VS Code Integration
+
+Open the workspace file `dotfiles.code-workspace` in VS Code for:
+- Automatic shell configuration loading
+- Integrated terminal with dotfiles functions
+- Task runner for dotfiles management
+
 ## Platform Support
 
 - ✅ **Linux** - Full support with symbolic links
