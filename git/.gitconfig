@@ -1,0 +1,63 @@
+[user]
+	name = Cyrus Jamula
+	email = cyrus@jamula.net
+
+[init]
+	defaultBranch = main
+
+[filter "lfs"]
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+
+[core]
+	editor = code --wait
+	autocrlf = input
+	ignoreCase = false
+
+[push]
+	default = simple
+	autoSetupRemote = true
+
+[pull]
+	rebase = false
+
+[branch]
+	autosetupmerge = always
+	autosetuprebase = always
+
+[diff]
+	tool = vscode
+
+[difftool "vscode"]
+	cmd = code --wait --diff $LOCAL $REMOTE
+
+[merge]
+	tool = vscode
+
+[mergetool "vscode"]
+	cmd = code --wait $MERGED
+
+[alias]
+	st = status
+	co = checkout
+	br = branch
+	ci = commit
+	ca = commit -a
+	cm = commit -m
+	cam = commit -am
+	cp = cherry-pick
+	df = diff
+	dc = diff --cached
+	lg = log --oneline --decorate --all --graph
+	ls = log --stat
+	pu = push
+	pl = pull
+	rb = rebase
+	rs = reset
+	sh = stash
+	sm = submodule
+	unstage = reset HEAD --
+	last = log -1 HEAD
+	visual = !gitk
