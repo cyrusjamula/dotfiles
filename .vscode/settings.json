@@ -1,0 +1,34 @@
+{
+    "chat.mcp.enabled": true,
+    "chat.mcp.discovery.enabled": true,
+    "chat.agent.enabled": true,
+    "chat.tools.autoApprove": true,
+    "chat.promptFilesLocations": {
+        ".github": true,
+        ".vscode/prompts": true
+    },
+    "github.copilot.enable": {
+        "*": true,
+        "plaintext": true,
+        "markdown": false,
+        "scminput": false
+    },
+
+    "githubIssues.queries": [        
+        {
+            "label": "My Issues",
+            "query": "is:open assignee:${user} repo:${owner}/${repository}",
+            "groupBy": [
+                "milestone"
+            ]
+        },
+        {
+            "label": "Created Issues",
+            "query": "author:${user} state:open repo:${owner}/${repository} sort:created-desc"
+        },
+        {
+            "label": "Recent Issues",
+            "query": "state:open repo:${owner}/${repository} sort:updated-desc"
+        }
+    ]
+}

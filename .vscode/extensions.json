@@ -1,0 +1,11 @@
+{
+    "recommendations": [
+        "donjayamanne.git-extension-pack",
+        "esbenp.prettier-vscode",
+        "github.copilot",
+        "github.copilot-chat",
+        "microsoft.ev2-authoring-extension",
+        "ms-dotnettools.csdevkit",
+        "ms-vscode-remote.vscode-remote-extensionpack"
+    ]
+}
