@@ -30,5 +30,8 @@
             "label": "Recent Issues",
             "query": "state:open repo:${owner}/${repository} sort:updated-desc"
         }
-    ]
+    ],
+    "chat.tools.terminal.autoApprove": {
+        "mkdir": true
+    }
 }
