@@ -23,5 +23,13 @@ if [ -d "$DOTFILES_DIR/shell" ] && [ -f "$DOTFILES_DIR/shell/install.sh" ]; then
     echo ""
 fi
 
+# Install Oh My Posh
+if [ -d "$DOTFILES_DIR/ohmyposh" ] && [ -f "$DOTFILES_DIR/ohmyposh/install.sh" ]; then
+    echo "Installing Oh My Posh configuration..."
+    cd "$DOTFILES_DIR/ohmyposh"
+    ./install.sh
+    echo ""
+fi
+
 echo "Dotfiles installation complete!"
 echo "==============================="

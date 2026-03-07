@@ -23,5 +23,14 @@ if (Test-Path $ShellInstaller) {
     Write-Host ""
 }
 
+# Install Oh My Posh
+$OhMyPoshInstaller = Join-Path $DotfilesDir "ohmyposh\install.ps1"
+if (Test-Path $OhMyPoshInstaller) {
+    Write-Host "Installing Oh My Posh configuration..." -ForegroundColor Blue
+    Set-Location (Join-Path $DotfilesDir "ohmyposh")
+    & .\install.ps1
+    Write-Host ""
+}
+
 Write-Host "Dotfiles installation complete!" -ForegroundColor Green
 Write-Host "===============================" -ForegroundColor Green
