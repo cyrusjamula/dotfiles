@@ -1,5 +1,4 @@
 {
-    "chat.mcp.enabled": true,
     "chat.mcp.discovery.enabled": true,
     "chat.agent.enabled": true,
     "chat.tools.autoApprove": true,
