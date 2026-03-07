@@ -16,6 +16,7 @@
       },
     },
     "terminal.integrated.defaultProfile.linux": "bash",
+    "chat.mcp.discovery.enabled": true,
     "chat.tools.terminal.autoApprove": {
       "command": true,
     },
