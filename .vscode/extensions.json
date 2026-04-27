@@ -1,9 +1,6 @@
 {
   "recommendations": [
     "donjayamanne.git-extension-pack",
-    "esbenp.prettier-vscode",
-    "microsoft.ev2-authoring-extension",
-    "ms-dotnettools.csdevkit",
     "ms-vscode-remote.vscode-remote-extensionpack"
   ]
 }
