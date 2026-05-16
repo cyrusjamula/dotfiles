@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # Oh My Posh installation script
 
@@ -10,7 +11,10 @@ echo "Installing Oh My Posh..."
 # Install oh-my-posh if not already installed
 if ! command -v oh-my-posh >/dev/null 2>&1; then
     echo "Oh My Posh not found, installing..."
-    curl -s https://ohmyposh.dev/install.sh | bash -s
+    INSTALL_SCRIPT="$(mktemp)"
+    curl -fsSL https://ohmyposh.dev/install.sh -o "$INSTALL_SCRIPT"
+    bash "$INSTALL_SCRIPT"
+    rm -f "$INSTALL_SCRIPT"
 else
     echo "Oh My Posh is already installed"
 fi

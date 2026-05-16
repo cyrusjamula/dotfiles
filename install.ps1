@@ -1,3 +1,6 @@
+#Requires -Version 5.1
+$ErrorActionPreference = "Stop"
+
 # Main dotfiles installation script for PowerShell
 
 $DotfilesDir = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -9,8 +12,8 @@ Write-Host "========================================" -ForegroundColor Green
 $GitInstaller = Join-Path $DotfilesDir "git\install.ps1"
 if (Test-Path $GitInstaller) {
     Write-Host "Installing Git configuration..." -ForegroundColor Blue
-    Set-Location (Join-Path $DotfilesDir "git")
-    & .\install.ps1
+    Push-Location (Join-Path $DotfilesDir "git")
+    try { & .\install.ps1 } finally { Pop-Location }
     Write-Host ""
 }
 
@@ -18,8 +21,8 @@ if (Test-Path $GitInstaller) {
 $ShellInstaller = Join-Path $DotfilesDir "shell\install.ps1"
 if (Test-Path $ShellInstaller) {
     Write-Host "Installing Shell configuration..." -ForegroundColor Blue
-    Set-Location (Join-Path $DotfilesDir "shell")
-    & .\install.ps1
+    Push-Location (Join-Path $DotfilesDir "shell")
+    try { & .\install.ps1 } finally { Pop-Location }
     Write-Host ""
 }
 
@@ -27,8 +30,8 @@ if (Test-Path $ShellInstaller) {
 $OhMyPoshInstaller = Join-Path $DotfilesDir "ohmyposh\install.ps1"
 if (Test-Path $OhMyPoshInstaller) {
     Write-Host "Installing Oh My Posh configuration..." -ForegroundColor Blue
-    Set-Location (Join-Path $DotfilesDir "ohmyposh")
-    & .\install.ps1
+    Push-Location (Join-Path $DotfilesDir "ohmyposh")
+    try { & .\install.ps1 } finally { Pop-Location }
     Write-Host ""
 }
 

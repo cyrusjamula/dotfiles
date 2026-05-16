@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # Git dotfiles installation script
 
@@ -7,10 +8,11 @@ GIT_DIR="$DOTFILES_DIR"
 
 echo "Installing Git dotfiles..."
 
-# Backup existing .gitconfig if it exists
-if [ -f "$HOME/.gitconfig" ]; then
-    echo "Backing up existing .gitconfig to .gitconfig.backup"
-    cp "$HOME/.gitconfig" "$HOME/.gitconfig.backup"
+# Backup existing .gitconfig if it exists and is not already a symlink to ours
+if [[ -f "$HOME/.gitconfig" ]] && [[ ! "$HOME/.gitconfig" -ef "$GIT_DIR/.gitconfig" ]]; then
+    BACKUP="$HOME/.gitconfig.backup.$(date +%Y%m%d%H%M%S)"
+    echo "Backing up existing .gitconfig to $BACKUP"
+    cp "$HOME/.gitconfig" "$BACKUP"
 fi
 
 # Create symlink to our dotfiles .gitconfig

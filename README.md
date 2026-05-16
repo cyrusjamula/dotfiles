@@ -7,6 +7,7 @@ Personal dotfiles repository to consolidate settings and configurations across L
 - [`git/`](git/) - Git configuration, aliases, and tool integration
 - [`shell/`](shell/) - Shell functions and initialization (Bash/Zsh)
 - [`ohmyposh/`](ohmyposh/) - Oh My Posh prompt theme and configuration
+- [`.devcontainer/`](.devcontainer/) - Dev container / Codespaces configuration
 - [`docs/`](docs/) - Project documentation
 
 ## Quick Start
@@ -105,6 +106,16 @@ Open `dotfiles.code-workspace` in VS Code for:
 - Automatic shell configuration loading via `BASH_ENV`
 - Integrated terminal with all dotfiles functions pre-loaded
 - Build task to reload dotfiles (`Load Dotfiles`)
+
+## Dev Container / Codespaces
+
+The `.devcontainer/devcontainer.json` enables:
+
+- **Ubuntu 24.04** base image with Git and GitHub CLI pre-installed
+- **60-minute idle timeout** for Codespaces (vs. the 30-minute default)
+- Automatic dotfiles installation via `postCreateCommand`
+
+Open this repo in a Codespace or VS Code Dev Container and everything is configured automatically.
 
 ## Platform Support
 

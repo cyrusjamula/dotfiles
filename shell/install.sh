@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # Shell dotfiles installation script
 
@@ -11,8 +12,8 @@ echo "Installing shell dotfiles..."
 add_source_line() {
     local file="$1"
     local source_line="$2"
-    
-    if [ -f "$file" ]; then
+
+    if [[ -f "$file" ]]; then
         if ! grep -Fxq "$source_line" "$file"; then
             echo "Adding dotfiles initialization to $file"
             echo "" >> "$file"

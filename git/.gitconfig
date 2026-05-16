@@ -25,7 +25,6 @@
 
 [branch]
 	autosetupmerge = always
-	autosetuprebase = always
 
 [diff]
 	tool = vscode
