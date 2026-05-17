@@ -29,5 +29,12 @@ if [[ -d "$DOTFILES_DIR/ohmyposh" ]] && [[ -f "$DOTFILES_DIR/ohmyposh/install.sh
     echo ""
 fi
 
+# Install Copilot CLI statusline
+if [[ -d "$DOTFILES_DIR/copilot-statusline" ]] && [[ -f "$DOTFILES_DIR/copilot-statusline/install.sh" ]]; then
+    echo "Installing Copilot CLI statusline..."
+    (cd "$DOTFILES_DIR/copilot-statusline" && ./install.sh)
+    echo ""
+fi
+
 echo "Dotfiles installation complete!"
 echo "==============================="

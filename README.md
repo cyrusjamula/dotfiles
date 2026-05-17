@@ -7,6 +7,7 @@ Personal dotfiles repository to consolidate settings and configurations across L
 - [`git/`](git/) - Git configuration, aliases, and tool integration
 - [`shell/`](shell/) - Shell functions and initialization (Bash/Zsh)
 - [`ohmyposh/`](ohmyposh/) - Oh My Posh prompt theme and configuration
+- [`copilot-statusline/`](copilot-statusline/) - Copilot CLI statusline (Oh My Posh powered)
 - [`.devcontainer/`](.devcontainer/) - Dev container / Codespaces configuration
 - [`docs/`](docs/) - Project documentation
 
