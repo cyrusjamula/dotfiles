@@ -1,21 +1,28 @@
 # Security Policy
 
-## Supported Versions
-
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
-
-| Version | Supported          |
-| ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
-
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
+If you discover a security vulnerability in this repository, please report it responsibly:
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+1. **Do not** open a public issue for security vulnerabilities
+2. Email [cyrus@jamula.net](mailto:cyrus@jamula.net) with details
+3. Include steps to reproduce and potential impact
+
+You can expect an acknowledgment within 48 hours and a resolution within 7 days for confirmed issues.
+
+## Scope
+
+This is a personal dotfiles repository. Security concerns primarily involve:
+
+- Accidental credential/secret exposure in configuration files
+- Unsafe script execution patterns (e.g., piping curl to shell)
+- Symlink-based attacks in install scripts
+
+## Best Practices
+
+The install scripts in this repo follow these security practices:
+
+- Downloads are saved to temp files before execution (not piped directly)
+- Scripts use `set -euo pipefail` for strict error handling
+- No secrets or tokens are stored in configuration files
+- `.gitignore` excludes sensitive local files

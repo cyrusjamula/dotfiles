@@ -40,14 +40,19 @@ cd shell && ./install.sh
 
 # Oh My Posh prompt
 cd ohmyposh && ./install.sh
+
+# Copilot CLI statusline
+cd copilot-statusline && ./install.sh
 ```
 
 ## Prerequisites
 
 - [Git](https://git-scm.com/) for version control configuration
-- [Oh My Posh](https://ohmyposh.dev/) for the custom prompt theme
+- [Oh My Posh](https://ohmyposh.dev/) for the custom prompt theme and Copilot statusline
+- [jq](https://jqlang.github.io/jq/) for the Copilot statusline installer (Linux/macOS)
 - [VS Code](https://code.visualstudio.com/) (optional) for diff/merge tool integration and the workspace file
 - [Git LFS](https://git-lfs.com/) (optional) for large file support
+- A [Nerd Font](https://www.nerdfonts.com/) for powerline glyphs and icons
 
 ## Structure
 
@@ -59,7 +64,7 @@ Each configuration module is organized in its own directory with:
   - `install.ps1` — Windows PowerShell
 - Documentation (`README.md`)
 
-Installation scripts back up existing configs before creating symbolic links. On Windows, scripts fall back to file copying if symbolic links are unavailable.
+Installation scripts use `set -euo pipefail` for strict error handling, back up existing configs (with timestamps) before creating symbolic links, and skip re-linking if already configured. On Windows, scripts fall back to file copying if symbolic links are unavailable.
 
 ## Features
 
@@ -67,7 +72,7 @@ Installation scripts back up existing configs before creating symbolic links. On
 
 Full Git setup including user settings, editor integration (VS Code), and workflow defaults like `autoSetupRemote` and LFS support.
 
-**Aliases (40+):**
+**Aliases:**
 
 | Alias | Command | Alias | Command |
 |-------|---------|-------|---------|
@@ -86,9 +91,9 @@ Full Git setup including user settings, editor integration (VS Code), and workfl
 
 ### Shell Functions
 
-Shell scripts are auto-loaded by `shell/init.sh`, which sources every `.sh` file in the `shell/` directory on terminal startup.
+Shell scripts are auto-loaded by `shell/init.sh`, which sources every `.sh` file in the `shell/` directory on terminal startup. New functions are added by creating a new `.sh` file — no registration needed.
 
-- **`clearOldBranches`** — Git branch cleanup, available as a shell function
+- **`clearOldBranches`** — Git branch cleanup, available as a shell function (exported for subshells)
 - **Oh My Posh initialization** — Automatically configures the custom prompt if `oh-my-posh` is installed
 
 ### Oh My Posh Theme
@@ -100,6 +105,18 @@ A custom two-line prompt theme with:
 - **Tooltips:** AWS and Azure context when relevant
 - SSH session awareness and a custom color palette
 
+### Copilot CLI Statusline
+
+An Oh My Posh-powered statusline for [GitHub Copilot CLI](https://docs.github.com/en/copilot/using-github-copilot/using-github-copilot-in-the-command-line) that displays:
+
+- Git branch and working tree status
+- Runtime/language versions (Node.js, Go, Python)
+- Context token usage with visual gauge
+- Session duration
+- Line changes (+added/-removed)
+
+Based on [Scott Hanselman's gist](https://gist.github.com/shanselman/9623ac74888a07ba82f63f5310fda11b).
+
 ## VS Code Integration
 
 Open `dotfiles.code-workspace` in VS Code for:
@@ -107,6 +124,8 @@ Open `dotfiles.code-workspace` in VS Code for:
 - Automatic shell configuration loading via `BASH_ENV`
 - Integrated terminal with all dotfiles functions pre-loaded
 - Build task to reload dotfiles (`Load Dotfiles`)
+- GitHub Copilot and MCP server configuration
+- GitHub Issues queries pre-configured
 
 ## Dev Container / Codespaces
 
@@ -126,6 +145,15 @@ Open this repo in a Codespace or VS Code Dev Container and everything is configu
 | **macOS** | ✅ Supported | Symbolic links |
 | **Windows WSL** | ✅ Supported | Symbolic links |
 | **Windows PowerShell** | ✅ Supported | Symbolic links (admin/Developer Mode) or file copy fallback |
+| **GitHub Codespaces** | ✅ Supported | Dev container with auto-install |
+
+## Adding a New Module
+
+1. Create a directory at the repo root (e.g., `vim/`)
+2. Add `install.sh` and `install.ps1` following the backup → symlink/copy pattern
+3. Add a `README.md` describing the module
+4. Register the module in both root `install.sh` and `install.ps1`
+5. Update this README to document the new module
 
 ## License
 
