@@ -35,5 +35,14 @@ if (Test-Path $OhMyPoshInstaller) {
     Write-Host ""
 }
 
+# Install Copilot CLI statusline
+$CopilotStatuslineInstaller = Join-Path $DotfilesDir "copilot-statusline\install.ps1"
+if (Test-Path $CopilotStatuslineInstaller) {
+    Write-Host "Installing Copilot CLI statusline..." -ForegroundColor Blue
+    Push-Location (Join-Path $DotfilesDir "copilot-statusline")
+    try { & .\install.ps1 } finally { Pop-Location }
+    Write-Host ""
+}
+
 Write-Host "Dotfiles installation complete!" -ForegroundColor Green
 Write-Host "===============================" -ForegroundColor Green
