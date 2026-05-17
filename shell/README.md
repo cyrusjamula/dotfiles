@@ -1,46 +1,55 @@
 # Shell Configuration
 
-This directory contains shell configuration files and functions for the dotfiles.
+Shell functions and initialization for Bash and Zsh. Auto-loads all `.sh` files in this directory on terminal startup.
 
 ## Installation
-
-Run the installation script to set up shell configuration:
 
 ```bash
 ./install.sh
 ```
 
-This will add the dotfiles initialization to your shell configuration files (`.bashrc`, `.bash_profile`, `.zshrc`).
+This adds a `source` line to `.bashrc`, `.bash_profile`, and `.zshrc` (if Zsh is available) pointing to `init.sh`.
+
+## How it works
+
+`init.sh` sources every `*.sh` file in the `shell/` directory (except itself). To add a new function, create a new `.sh` file — no registration needed.
+
+Functions are exported with `export -f` to be available in subshells.
 
 ## Available Functions
 
 ### `clearOldBranches`
 
-Cleans up local Git branches that have been deleted from the remote repository.
+Cleans up local Git branches that have been deleted from the remote.
 
 **What it does:**
-1. Switches to the `main` branch
-2. Updates remote references and prunes deleted branches
-3. Finds local branches that are marked as "gone" from remote
-4. Deletes those local branches
+
+1. Switches to `main`
+2. Runs `git remote update origin --prune`
+3. Finds branches marked as "gone" from remote
+4. Deletes those local branches with `git branch -D`
 
 **Usage:**
+
 ```bash
 clearOldBranches
-```
-
-**Git Alias:**
-The same functionality is also available as a Git alias:
-```bash
+# or as a git alias:
 git clearOldBranches
 ```
 
+### Oh My Posh auto-initialization
+
+`ohmyposh.sh` detects if `oh-my-posh` is installed and automatically initializes the prompt with the repo's theme. Guarded with `command -v` so it's silently skipped if Oh My Posh isn't present.
+
 ## Files
 
-- `init.sh` - Main loader that sources all shell configuration files
-- `git.sh` - Git-related functions and aliases  
-- `install.sh` - Installation script for shell configuration
+| File | Purpose |
+|------|---------|
+| `init.sh` | Main loader — sources all other `.sh` files |
+| `git.sh` | Git-related functions (`clearOldBranches`) |
+| `ohmyposh.sh` | Oh My Posh prompt initialization |
+| `install.sh` | Installer (appends source line to rc files) |
 
 ## VS Code Integration
 
-The workspace is configured to automatically load the shell configuration when opening terminals in VS Code. The `dotfiles.code-workspace` file contains the necessary settings.
+The workspace file (`dotfiles.code-workspace`) sets `BASH_ENV` to load shell config automatically in VS Code integrated terminals.
