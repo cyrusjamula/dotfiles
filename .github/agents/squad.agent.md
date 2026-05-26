@@ -362,6 +362,19 @@ Before spawning an agent, determine which model to use. Check these layers in or
 - **When user says "use X for {agent}":** Write to `agentModelOverrides.{agent}` in `.squad/config.json`. Acknowledge: `✅ {Agent} will always use {model} — saved to config.`
 - **When user says "switch back to automatic" / "clear model preference":** Remove `defaultModel` (and optionally `agentModelOverrides`) from `.squad/config.json`. Acknowledge: `✅ Model preference cleared — returning to automatic selection.`
 
+**Other persistent flags read from `.squad/config.json` on session start:**
+
+| Key | Type | Effect |
+|---|---|---|
+| `worktrees` | `true` / `false` | When `true`, the coordinator runs the Pre-Spawn Worktree Setup flow for issue-based work (see Worktree Lifecycle Management). Equivalent to `SQUAD_WORKTREES=1`. |
+| `alwaysParallel` | `true` / `false` | When `true`, bias mode selection toward parallel fan-out: prefer **Full Mode** whenever the request decomposes into 2+ independent units of work, and always batch spawnable agents in a single tool-calling turn. Treat single-agent Standard Mode as the fallback only when the task is genuinely indivisible. |
+| `economyMode` | `true` / `false` | See `skills/economy-mode/SKILL.md`. |
+
+- **When user says "always use worktrees" / "use worktree when possible":** Set `worktrees: true` in `.squad/config.json`. Acknowledge: `✅ Worktree mode enabled — issue-based spawns will use dedicated worktrees.`
+- **When user says "always run in parallel" / "run everything in parallel" / "max parallelism":** Set `alwaysParallel: true` in `.squad/config.json`. Acknowledge: `✅ Always-parallel mode enabled — multi-unit work will fan out concurrently by default.`
+- **When user says "disable worktrees" / "stop using worktrees":** Remove `worktrees` (or set to `false`) in `.squad/config.json`. Acknowledge: `✅ Worktree mode disabled.`
+- **When user says "stop running everything in parallel" / "disable always-parallel":** Remove `alwaysParallel` (or set to `false`) in `.squad/config.json`. Acknowledge: `✅ Always-parallel mode disabled — returning to default mode selection.`
+
 **Layer 1 — Session Directive:** Did the user specify a model for this session? ("use opus for this session", "save costs"). If yes, use that model. Session-wide directives persist until the session ends or contradicted.
 
 **Layer 2 — Charter Preference:** Does the agent's charter have a `## Model` section with `Preferred` set to a specific model (not `auto`)? If yes, use that model.
@@ -658,7 +671,7 @@ Squad and all spawned agents may be running inside a **git worktree** rather tha
 When worktree mode is enabled, the coordinator creates dedicated worktrees for issue-based work. This gives each issue its own isolated branch checkout without disrupting the main repo.
 
 **Worktree mode activation:**
-- Explicit: `worktrees: true` in project config (squad.config.ts or package.json `squad` section)
+- Explicit: `worktrees: true` in `.squad/config.json`, or in project config (`squad.config.ts` or `package.json` `squad` section)
 - Environment: `SQUAD_WORKTREES=1` set in environment variables
 - Default: `false` (backward compatibility — agents work in the main repo)
 
@@ -700,7 +713,7 @@ When spawning an agent for issue-based work (user request references an issue nu
 
 **1. Check worktree mode:**
 - Is `SQUAD_WORKTREES=1` set in the environment?
-- Or does the project config have `worktrees: true`?
+- Or does `.squad/config.json` (or other project config) have `worktrees: true`?
 - If neither: skip worktree setup → agent works in the main repo (existing behavior)
 
 **2. If worktrees enabled:**
