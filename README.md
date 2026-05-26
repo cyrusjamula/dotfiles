@@ -91,7 +91,7 @@ Full Git setup including user settings, editor integration (VS Code), and workfl
 
 ### Shell Functions
 
-Shell scripts are auto-loaded by `shell/init.sh`, which sources every `.sh` file in the `shell/` directory on terminal startup. New functions are added by creating a new `.sh` file — no registration needed.
+Shell scripts are auto-loaded by `shell/init.sh`, which sources every `.sh` file in the `shell/` directory on terminal startup (excluding `install.sh`). New functions are added by creating a new `.sh` file — no registration needed.
 
 - **`clearOldBranches`** — Git branch cleanup, available as a shell function (exported for subshells)
 - **Oh My Posh initialization** — Automatically configures the custom prompt if `oh-my-posh` is installed
