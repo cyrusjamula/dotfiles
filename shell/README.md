@@ -12,7 +12,7 @@ This adds a `source` line to `.bashrc`, `.bash_profile`, and `.zshrc` (if Zsh is
 
 ## How it works
 
-`init.sh` sources every `*.sh` file in the `shell/` directory (except itself). To add a new function, create a new `.sh` file — no registration needed.
+`init.sh` sources every `*.sh` file in the `shell/` directory (except itself and `install.sh`). To add a new function, create a new `.sh` file — no registration needed.
 
 Functions are exported with `export -f` to be available in subshells.
 

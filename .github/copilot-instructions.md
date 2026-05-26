@@ -23,7 +23,7 @@ No build, test, or lint tooling exists in this repository.
 
 **Module system:** Each top-level directory (`git/`, `shell/`, `ohmyposh/`) is a self-contained module with its own `install.sh`, `install.ps1`, and `README.md`. The root install scripts orchestrate by conditionally calling each module's installer.
 
-**Shell auto-loading:** `shell/init.sh` sources every `*.sh` file in the `shell/` directory (except itself). New shell functions are added by creating a new `.sh` file in `shell/` — no registration needed. Functions must be exported with `export -f` to be available in subshells.
+**Shell auto-loading:** `shell/init.sh` sources every `*.sh` file in the `shell/` directory (except itself and `install.sh`). New shell functions are added by creating a new `.sh` file in `shell/` — no registration needed. Functions must be exported with `export -f` to be available in subshells.
 
 **VS Code integration:** The `dotfiles.code-workspace` sets `BASH_ENV` to auto-load shell config in integrated terminals and provides a "Load Dotfiles" build task.
 
