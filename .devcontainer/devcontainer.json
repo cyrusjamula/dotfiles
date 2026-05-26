@@ -13,7 +13,7 @@
       }
     },
     "codespaces": {
-      "idleTimeoutMinutes": 60
+      "idleTimeoutMinutes": 180
     }
   }
 }

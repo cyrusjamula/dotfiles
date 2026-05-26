@@ -132,7 +132,7 @@ Open `dotfiles.code-workspace` in VS Code for:
 The `.devcontainer/devcontainer.json` enables:
 
 - **Ubuntu 24.04** base image with Git and GitHub CLI pre-installed
-- **60-minute idle timeout** for Codespaces (vs. the 30-minute default)
+- **180-minute idle timeout** for Codespaces (vs. the 30-minute default)
 - Automatic dotfiles installation via `postCreateCommand`
 
 Open this repo in a Codespace or VS Code Dev Container and everything is configured automatically.
