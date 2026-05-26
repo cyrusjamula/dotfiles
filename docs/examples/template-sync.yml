@@ -1,0 +1,53 @@
+# Upstream template sync workflow
+# ---------------------------------
+# Drop this file into your downstream repo at .github/workflows/template-sync.yml
+# to automatically open PRs when cyrusjamula/dotfiles changes.
+#
+# Docs: https://github.com/cyrusjamula/dotfiles/blob/main/SYNCING.md
+# Action: https://github.com/AndreasAugustin/actions-template-sync
+#
+# Personal files to keep (don't get overwritten by upstream) belong in a
+# `.templatesyncignore` file at the root of your downstream repo.
+
+name: Sync from upstream template
+
+on:
+  # Run weekly — Mondays at 09:00 UTC
+  schedule:
+    - cron: "0 9 * * 1"
+  # Allow manual runs from the Actions tab
+  workflow_dispatch:
+    inputs:
+      upstream_branch:
+        description: "Upstream branch to sync from"
+        required: false
+        default: "main"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    name: Open sync PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Sync from upstream template
+        uses: AndreasAugustin/actions-template-sync@v2
+        with:
+          source_repo_path: cyrusjamula/dotfiles
+          upstream_branch: ${{ github.event.inputs.upstream_branch || 'main' }}
+          pr_title: "chore(sync): pull latest from upstream template"
+          pr_branch_name_prefix: chore/template-sync
+          pr_labels: template-sync,automated
+          pr_body: |
+            Automated sync from [cyrusjamula/dotfiles](https://github.com/cyrusjamula/dotfiles).
+
+            Review the diff, resolve any conflicts in files you've personalized,
+            and add long-term local overrides to `.templatesyncignore`.
+
+            See [SYNCING.md](https://github.com/cyrusjamula/dotfiles/blob/main/SYNCING.md)
+            for the full sync guide.

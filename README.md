@@ -162,3 +162,9 @@ This project is licensed under the [MIT License](LICENSE).
 ## Security
 
 See [SECURITY.md](SECURITY.md) for vulnerability reporting guidelines.
+
+## Using this as a Template
+
+This repo is a [GitHub template](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template). Click **Use this template** on GitHub to create your own dotfiles repo from it.
+
+To **keep your downstream copy in sync** with upstream updates (manual or automated via a GitHub Action), see [SYNCING.md](SYNCING.md). An example sync workflow is included at [`docs/examples/template-sync.yml`](docs/examples/template-sync.yml).
