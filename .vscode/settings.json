@@ -70,5 +70,6 @@
     ],
     "chat.tools.terminal.autoApprove": {
         "mkdir": true
-    }
+    },
+    "terminal.integrated.fontFamily": "'Cascadia Code NF', 'CaskaydiaCove Nerd Font', 'CaskaydiaCove NF', 'Cascadia Code', monospace"
 }
