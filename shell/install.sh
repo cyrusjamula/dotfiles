@@ -12,19 +12,36 @@ SHELL_DIR="$DOTFILES_DIR"
 
 echo "Installing shell dotfiles..."
 
-# Function to add source line to a file if it doesn't exist
+# Add (or update) a dotfiles init.sh source line in a shell rc file.
+# Matches any existing line that sources a dotfiles init.sh (regardless of path)
+# so re-runs from a different clone (e.g. Codespaces persistedshare vs. the
+# workspace mount) don't accumulate duplicate source lines.
 add_source_line() {
     local file="$1"
     local source_line="$2"
 
     if [[ -f "$file" ]]; then
-        if ! grep -Fxq "$source_line" "$file"; then
+        local matches
+        matches="$(grep -Ec '^[[:space:]]*(source|\.)[[:space:]]+["'\'']?.*/shell/init\.sh["'\'']?[[:space:]]*$' "$file" || true)"
+
+        if [[ "$matches" -eq 0 ]]; then
             echo "Adding dotfiles initialization to $file"
             echo "" >> "$file"
             echo "# Load dotfiles shell configuration" >> "$file"
             echo "$source_line" >> "$file"
-        else
+        elif [[ "$matches" -eq 1 ]] && grep -Fxq "$source_line" "$file"; then
             echo "Dotfiles initialization already present in $file"
+        else
+            echo "Consolidating dotfiles initialization in $file ($matches existing lines)"
+            local tmp
+            tmp="$(mktemp)"
+            awk -v new="$source_line" '
+                /^[[:space:]]*(source|\.)[[:space:]]+["'\'']?.*\/shell\/init\.sh["'\'']?[[:space:]]*$/ {
+                    if (!seen) { print new; seen = 1 }
+                    next
+                }
+                { print }
+            ' "$file" > "$tmp" && mv "$tmp" "$file"
         fi
     else
         echo "Creating $file and adding dotfiles initialization"
