@@ -1,7 +1,11 @@
 #!/bin/bash
-set -euo pipefail
 
 # Shell dotfiles installation script
+# Safe to source: bail out if sourced rather than executed, so strict-mode
+# shell options never leak into an interactive shell.
+(return 0 2>/dev/null) && return 0
+
+set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SHELL_DIR="$DOTFILES_DIR"
