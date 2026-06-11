@@ -131,8 +131,9 @@ Open `dotfiles.code-workspace` in VS Code for:
 
 The `.devcontainer/devcontainer.json` enables:
 
-- **Ubuntu 24.04** base image with Git and GitHub CLI pre-installed
-- **180-minute idle timeout** for Codespaces (vs. the 30-minute default)
+- **Ubuntu 24.04** base image with Git, GitHub CLI, Node.js, and PowerShell (`pwsh`) pre-installed
+- **240-minute idle timeout** for Codespaces (vs. the 30-minute default)
+- **GitHub Copilot CLI** (`copilot`) and **Squad CLI** (`squad`) installed globally via `postCreateCommand`
 - Automatic dotfiles installation via `postCreateCommand`
 
 Open this repo in a Codespace or VS Code Dev Container and everything is configured automatically.
