@@ -8,6 +8,7 @@ Personal dotfiles repository to consolidate settings and configurations across L
 - [`shell/`](shell/) - Shell functions and initialization (Bash/Zsh)
 - [`ohmyposh/`](ohmyposh/) - Oh My Posh prompt theme and configuration
 - [`copilot-statusline/`](copilot-statusline/) - Copilot CLI statusline (Oh My Posh powered)
+- [`winget/`](winget/) - WinGet bootstrap module for Windows
 - [`.devcontainer/`](.devcontainer/) - Dev container / Codespaces configuration
 - [`docs/`](docs/) - Project documentation
 
@@ -43,6 +44,9 @@ cd ohmyposh && ./install.sh
 
 # Copilot CLI statusline
 cd copilot-statusline && ./install.sh
+
+# WinGet bootstrap (Windows only)
+cd winget && ./install.sh
 ```
 
 ## Prerequisites
@@ -53,6 +57,7 @@ cd copilot-statusline && ./install.sh
 - [VS Code](https://code.visualstudio.com/) (optional) for diff/merge tool integration and the workspace file
 - [Git LFS](https://git-lfs.com/) (optional) for large file support
 - A [Nerd Font](https://www.nerdfonts.com/) for powerline glyphs and icons
+- [WinGet](https://learn.microsoft.com/windows/package-manager/winget/) (optional, Windows) for package management
 
 ## Structure
 

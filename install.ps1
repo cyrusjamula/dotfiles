@@ -44,5 +44,14 @@ if (Test-Path $CopilotStatuslineInstaller) {
     Write-Host ""
 }
 
+# Install WinGet
+$WingetInstaller = Join-Path $DotfilesDir "winget\install.ps1"
+if (Test-Path $WingetInstaller) {
+    Write-Host "Installing WinGet..." -ForegroundColor Blue
+    Push-Location (Join-Path $DotfilesDir "winget")
+    try { & .\install.ps1 } finally { Pop-Location }
+    Write-Host ""
+}
+
 Write-Host "Dotfiles installation complete!" -ForegroundColor Green
 Write-Host "===============================" -ForegroundColor Green

@@ -36,5 +36,12 @@ if [[ -d "$DOTFILES_DIR/copilot-statusline" ]] && [[ -f "$DOTFILES_DIR/copilot-s
     echo ""
 fi
 
+# Install WinGet (Windows only)
+if [[ -d "$DOTFILES_DIR/winget" ]] && [[ -f "$DOTFILES_DIR/winget/install.sh" ]]; then
+    echo "Installing WinGet..."
+    (cd "$DOTFILES_DIR/winget" && ./install.sh)
+    echo ""
+fi
+
 echo "Dotfiles installation complete!"
 echo "==============================="
