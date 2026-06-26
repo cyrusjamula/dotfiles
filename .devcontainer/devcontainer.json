@@ -14,7 +14,10 @@
     "vscode": {
       "settings": {
         "terminal.integrated.defaultProfile.linux": "bash"
-      }
+      },
+      "extensions": [
+        "GitHub.vscode-github-actions"
+      ]
     },
     "codespaces": {
       "idleTimeoutMinutes": 240
