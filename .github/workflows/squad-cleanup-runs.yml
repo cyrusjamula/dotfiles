@@ -1,0 +1,104 @@
+name: Squad Cleanup — Workflow Runs
+
+on:
+  schedule:
+    # Runs every Monday at 13:00 UTC (06:00 America/Los_Angeles)
+    - cron: '0 13 * * 1'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run — show what would be deleted without deleting'
+        required: false
+        default: 'false'
+        type: choice
+        options: ['false', 'true']
+
+permissions:
+  actions: write
+
+jobs:
+  cleanup:
+    name: Delete stale workflow runs
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REPO: ${{ github.repository }}
+      DRY_RUN: ${{ inputs.dry_run }}
+    steps:
+      - name: Fetch all workflow runs and compute delete list
+        run: |
+          echo "Fetching workflow runs..."
+          gh run list --repo "$REPO" --limit 500 \
+            --json workflowName,databaseId,conclusion,createdAt \
+            > /tmp/runs.json
+
+          python3 <<'PYEOF'
+          import json
+          from collections import defaultdict
+
+          runs = json.load(open('/tmp/runs.json'))
+          print(f"Total runs fetched: {len(runs)}")
+
+          by_wf = defaultdict(list)
+          for r in runs:
+              by_wf[r['workflowName']].append(r)
+
+          SUCCESS = {'success', 'action_required'}
+          FAILURE = {'failure', 'startup_failure'}
+          SKIP    = {'', None, 'in_progress', 'queued', 'waiting'}
+
+          to_delete = []
+          kept = []
+
+          for wf, wf_runs in sorted(by_wf.items()):
+              wf_runs.sort(key=lambda r: r['createdAt'], reverse=True)
+              keep = set()
+              s = next((r for r in wf_runs if r['conclusion'] in SUCCESS), None)
+              f = next((r for r in wf_runs if r['conclusion'] in FAILURE), None)
+              if s:
+                  keep.add(s['databaseId'])
+                  kept.append(f"  [success] {wf} — {s['databaseId']}")
+              if f:
+                  keep.add(f['databaseId'])
+                  kept.append(f"  [failure] {wf} — {f['databaseId']}")
+              for r in wf_runs:
+                  if r['conclusion'] in SKIP:
+                      continue
+                  if r['databaseId'] not in keep:
+                      to_delete.append(r['databaseId'])
+
+          print(f"\nKeeping {len(kept)} runs:")
+          for k in kept:
+              print(k)
+
+          print(f"\nMarked for deletion: {len(to_delete)} runs")
+          with open('/tmp/runs_to_delete.txt', 'w') as f:
+              f.write('\n'.join(str(i) for i in to_delete))
+          PYEOF
+
+      - name: Delete stale runs (dry run preview)
+        if: ${{ inputs.dry_run == 'true' }}
+        run: |
+          echo "DRY RUN — would delete these run IDs:"
+          cat /tmp/runs_to_delete.txt
+          COUNT=$(wc -l < /tmp/runs_to_delete.txt)
+          echo ""
+          echo "Total: $COUNT runs would be deleted."
+
+      - name: Delete stale runs
+        if: ${{ inputs.dry_run == 'false' }}
+        run: |
+          COUNT=$(wc -l < /tmp/runs_to_delete.txt | tr -d ' ')
+          echo "Deleting $COUNT stale runs..."
+          SUCCESS=0
+          FAIL=0
+          while IFS= read -r run_id; do
+            if gh run delete "$run_id" --repo "$REPO" 2>/dev/null; then
+              SUCCESS=$((SUCCESS + 1))
+            else
+              FAIL=$((FAIL + 1))
+            fi
+          done < /tmp/runs_to_delete.txt
+          echo ""
+          echo "✅ Deleted: $SUCCESS"
+          echo "⚠️  Failed:  $FAIL"
