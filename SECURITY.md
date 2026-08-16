@@ -1,6 +1,6 @@
 # Security Policy
 
-## Supported Version
+## Supported Versions
 
 This repository is maintained as a rolling configuration. Security fixes are applied to the default branch; older commits and downstream copies are not supported. Template users should review [SYNCING.md](SYNCING.md) to keep their copies current.
 
