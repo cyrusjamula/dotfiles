@@ -5,14 +5,26 @@ Shell functions and initialization for Bash and Zsh. Auto-loads all `.sh` files 
 ## Installation
 
 ```bash
+cd shell
 ./install.sh
 ```
 
-This adds a `source` line to `.bashrc`, `.bash_profile`, and `.zshrc` (if Zsh is available) pointing to `init.sh`.
+The shell module has a Bash installer and is not installed by the root PowerShell script. It adds a `source` line pointing to `init.sh` in:
+
+- `~/.bashrc` and `~/.bash_profile` when run from Bash
+- `~/.zshrc` when Zsh is installed
+
+Re-running the installer is safe: it detects the existing initialization, updates stale dotfiles paths, and consolidates duplicate entries.
+
+After installation, restart the shell or run:
+
+```bash
+source ~/.bashrc
+```
 
 ## How it works
 
-`init.sh` sources every `*.sh` file in the `shell/` directory (except itself and `install.sh`). To add a new function, create a new `.sh` file — no registration needed.
+`init.sh` sources every `*.sh` file in the `shell/` directory except itself and `install.sh`. It prints each loaded filename and a completion message. To add a new function, create a new `.sh` file — no registration is needed.
 
 Functions are exported with `export -f` to be available in subshells.
 
@@ -27,7 +39,7 @@ Cleans up local Git branches that have been deleted from the remote.
 1. Switches to `main`
 2. Runs `git remote update origin --prune`
 3. Finds branches marked as "gone" from remote
-4. Deletes those local branches with `git branch -D`
+4. Force-deletes those local branches with `git branch -D`
 
 **Usage:**
 
@@ -36,6 +48,9 @@ clearOldBranches
 # or as a git alias:
 git clearOldBranches
 ```
+
+> [!WARNING]
+> The function uses `git branch -D`; review `git branch -vv` first if a branch may contain unmerged work.
 
 ### Oh My Posh auto-initialization
 
@@ -49,6 +64,8 @@ git clearOldBranches
 | `git.sh` | Git-related functions (`clearOldBranches`) |
 | `ohmyposh.sh` | Oh My Posh prompt initialization |
 | `install.sh` | Installer (appends source line to rc files) |
+
+The loader excludes `install.sh`, so re-sourcing `init.sh` never runs the installer.
 
 ## VS Code Integration
 

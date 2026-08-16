@@ -20,12 +20,21 @@ The Bash installer is a no-op and prints guidance to run the PowerShell installe
 
 ## What the PowerShell installer does
 
-1. Checks if `winget` is already available.
-2. Downloads the latest App Installer bundle from `https://aka.ms/getwinget`.
-3. Installs it with `Add-AppxPackage`.
-4. Verifies `winget` availability and prints the version.
+1. Checks that the shell provides `Add-AppxPackage`.
+2. Exits successfully if `winget` is already available and prints its version.
+3. Downloads the latest App Installer bundle from `https://aka.ms/getwinget` to `%TEMP%\Microsoft.DesktopAppInstaller.msixbundle`.
+4. Installs it with `Add-AppxPackage`.
+5. Verifies `winget` availability and prints the version.
+
+## Requirements
+
+- Windows with AppX package support
+- Windows PowerShell 5.1 or newer
+- Network access to `https://aka.ms/getwinget`
 
 ## Notes
 
 - WinGet is only supported on Windows.
 - You may need to open a new terminal after installation.
+- If App Installer completes but `winget` remains unavailable, install **App Installer** from Microsoft Store.
+- The installer does not remove the downloaded bundle from `%TEMP%`.

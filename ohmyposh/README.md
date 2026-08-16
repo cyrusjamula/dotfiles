@@ -4,16 +4,29 @@ Installs [Oh My Posh](https://ohmyposh.dev/) and configures a custom prompt them
 
 ## Installation
 
+**Linux/macOS/WSL:**
+
 ```bash
-./install.sh      # Linux/macOS/WSL
-.\install.ps1     # Windows PowerShell
+cd ohmyposh
+./install.sh
+```
+
+**Windows PowerShell:**
+
+```powershell
+Set-Location ohmyposh
+.\install.ps1
 ```
 
 ## What it does
 
-1. Installs Oh My Posh if not already present (downloads to temp file for verification, or via `winget` on Windows)
+1. Installs Oh My Posh if it is not already present (using a temporary download on Linux/macOS/WSL or `winget` on Windows)
 2. Adds prompt initialization to shell config files (`.bashrc`, `.bash_profile`, `.zshrc`, or PowerShell `$PROFILE`)
 3. Uses the custom theme defined in `theme.omp.json`
+
+The installer does not replace an existing line containing `oh-my-posh init`. If another theme is already configured, update that line manually to use this repository's `theme.omp.json`.
+
+After installation, restart the shell. Bash users can instead run `source ~/.bashrc`, and PowerShell users can run `. $PROFILE`.
 
 ## Theme
 
@@ -51,5 +64,13 @@ oh-my-posh init bash --config ~/.poshthemes/jandedobbeleer.omp.json
 
 ## Prerequisites
 
+- `curl` and Bash on Linux/macOS/WSL
+- WinGet on Windows
 - A [Nerd Font](https://www.nerdfonts.com/) is required for powerline glyphs and icons
 - Recommended: [FiraCode Nerd Font](https://github.com/ryanoasis/nerd-fonts/releases) or [CascadiaCode Nerd Font](https://github.com/microsoft/cascadia-code)
+
+Verify the installation with:
+
+```bash
+oh-my-posh version
+```
