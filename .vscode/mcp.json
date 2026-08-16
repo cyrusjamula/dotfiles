@@ -9,10 +9,10 @@
 				"--rm",
 				"-e",
 				"GITHUB_PERSONAL_ACCESS_TOKEN=${input:token}",
-				"ghcr.io/github/github-mcp-server:0.32.0"
+				"ghcr.io/github/github-mcp-server:1.9.0"
 			],
 			"gallery": "https://api.mcp.github.com",
-			"version": "0.32.0"
+			"version": "1.9.0"
 		},
 		"microsoft/markitdown": {
 			"type": "stdio",
