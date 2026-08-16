@@ -30,6 +30,10 @@ cd copilot-statusline; .\install.ps1
 
 After installation, run `/restart` in Copilot CLI.
 
+The installer copies the platform renderer and theme to `~/.copilot/`, then creates or updates `~/.copilot/settings.json`. When settings already exist, it creates a timestamped backup and preserves unrelated properties.
+
+On Linux/macOS/WSL, `jq` is required to update an existing settings file. If `jq` is unavailable, the files are still copied and the installer prints manual configuration guidance.
+
 ## Files
 
 | File | Purpose |
@@ -55,3 +59,15 @@ After installation, run `/restart` in Copilot CLI.
 3. Values are set as environment variables (`COPILOT_STATUS_*`)
 4. Oh My Posh renders the statusline theme using those variables
 5. Output is returned to Copilot on stdout
+
+The installer enables `experimental`, adds `STATUS_LINE` to `feature_flags.enabled`, and configures the platform-specific command with one character of padding.
+
+## Updating
+
+Re-run the installer after changing a renderer or `statusline.omp.json`. The installed files are copies, not symbolic links, so repository edits do not take effect until they are copied again.
+
+## Troubleshooting
+
+- Run `oh-my-posh version` and `jq --version` (Linux/macOS/WSL) to verify prerequisites.
+- Confirm the statusline command in `~/.copilot/settings.json` points to an existing file.
+- Run `/restart` in Copilot CLI after installation or configuration changes.

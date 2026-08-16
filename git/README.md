@@ -10,13 +10,13 @@ Git configuration with aliases, editor integration, and workflow defaults.
 
 ## Installation
 
-### Linux/macOS/WSL:
+### Linux/macOS/WSL
 
 ```bash
 ./install.sh
 ```
 
-### Windows PowerShell:
+### Windows PowerShell
 
 ```powershell
 .\install.ps1
@@ -24,9 +24,14 @@ Git configuration with aliases, editor integration, and workflow defaults.
 
 The installer will:
 
-1. Back up your existing `.gitconfig` with a timestamp (e.g., `.gitconfig.backup.20260517070000`)
-2. Skip backup if already symlinked to this repo
-3. Create a symlink from `~/.gitconfig` to the dotfiles version (or copy if symlinks are unavailable on Windows)
+1. Preserve an existing `.gitconfig`.
+   - Bash creates a timestamped backup such as `.gitconfig.backup.20260517070000`, unless the file already resolves to this repository's configuration.
+   - PowerShell writes `.gitconfig.backup`.
+2. Create a symlink from the home-directory `.gitconfig` to this repository.
+3. On Windows, copy the file instead if symbolic links are unavailable.
+
+> [!IMPORTANT]
+> The included `.gitconfig` contains the repository owner's name and email. Update the `[user]` section before installing if you are using this repository as a template.
 
 ## Configuration Highlights
 
@@ -45,7 +50,7 @@ The installer will:
 | `ca` | commit -a | `cm` | commit -m |
 | `cam` | commit -am | `cp` | cherry-pick |
 | `df` | diff | `dc` | diff --cached |
-| `lg` | log --oneline --graph | `ls` | log --stat |
+| `lg` | log --oneline --decorate --all --graph | `ls` | log --stat |
 | `pu` | push | `pl` | pull |
 | `rb` | rebase | `rs` | reset |
 | `sh` | stash | `sm` | submodule |
@@ -61,9 +66,18 @@ The installer will:
 ### Workflow Defaults
 
 - `push.autoSetupRemote = true` — automatically tracks upstream on first push
+- `push.default = simple` — pushes the current branch to its matching upstream
 - `branch.autosetupmerge = always` — new branches auto-configure merge tracking
+- `pull.rebase = false` — uses merge-based pulls by default
 - `core.autocrlf = input` — normalize line endings on commit
 - Git LFS configured for large file support
+
+## Branch Cleanup
+
+Run `git clearOldBranches` to switch to `main`, prune `origin`, and delete local branches whose tracked upstream is marked as gone.
+
+> [!WARNING]
+> This alias uses `git branch -D`, so unmerged commits on matching branches are discarded. Review `git branch -vv` before running it.
 
 ## Manual Installation
 
@@ -84,3 +98,4 @@ New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.gitconfig" -Target "C:\
 - **Symbolic links** require administrator privileges or Windows Developer Mode
 - If unavailable, the installer copies the file instead (changes won't auto-sync)
 - Enable Developer Mode: Settings → Privacy & Security → For developers → Developer Mode
+- Re-run the installer after repository changes when using the copy fallback
