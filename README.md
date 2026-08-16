@@ -4,27 +4,35 @@ Personal dotfiles repository to consolidate settings and configurations across L
 
 ## Contents
 
-- [`git/`](git/) - Git configuration, aliases, and tool integration
-- [`shell/`](shell/) - Shell functions and initialization (Bash/Zsh)
-- [`ohmyposh/`](ohmyposh/) - Oh My Posh prompt theme and configuration
-- [`copilot-statusline/`](copilot-statusline/) - Copilot CLI statusline (Oh My Posh powered)
-- [`winget/`](winget/) - WinGet bootstrap module for Windows
-- [`.devcontainer/`](.devcontainer/) - Dev container / Codespaces configuration
-- [`docs/`](docs/) - Project documentation
+| Path | Purpose |
+|------|---------|
+| [`git/`](git/) | Git configuration, aliases, and VS Code tool integration |
+| [`shell/`](shell/) | Bash/Zsh functions and initialization |
+| [`ohmyposh/`](ohmyposh/) | Oh My Posh installation and custom prompt theme |
+| [`copilot-statusline/`](copilot-statusline/) | Oh My Posh-powered Copilot CLI statusline |
+| [`winget/`](winget/) | WinGet bootstrap for Windows |
+| [`.devcontainer/`](.devcontainer/) | Dev Container and Codespaces configuration |
+| [`docs/`](docs/) | Documentation index and reusable examples |
 
 ## Quick Start
 
 ### Install Everything
 
+Clone the repository, then run the installer for your platform:
+
 **Linux/macOS/WSL:**
 
 ```bash
+git clone https://github.com/cyrusjamula/dotfiles.git
+cd dotfiles
 ./install.sh
 ```
 
 **Windows PowerShell:**
 
 ```powershell
+git clone https://github.com/cyrusjamula/dotfiles.git
+Set-Location dotfiles
 .\install.ps1
 ```
 
@@ -45,15 +53,19 @@ cd ohmyposh && ./install.sh
 # Copilot CLI statusline
 cd copilot-statusline && ./install.sh
 
-# WinGet bootstrap (Windows only)
-cd winget && ./install.sh
+# WinGet bootstrap (Windows PowerShell)
+cd winget
+.\install.ps1
 ```
+
+The Bash WinGet installer is intentionally a no-op that prints Windows installation guidance.
 
 ## Prerequisites
 
 - [Git](https://git-scm.com/) for version control configuration
 - [Oh My Posh](https://ohmyposh.dev/) for the custom prompt theme and Copilot statusline
-- [jq](https://jqlang.github.io/jq/) for the Copilot statusline installer (Linux/macOS)
+- [curl](https://curl.se/) to install Oh My Posh on Linux/macOS/WSL
+- [jq](https://jqlang.github.io/jq/) to merge Copilot CLI settings on Linux/macOS/WSL when `~/.copilot/settings.json` already exists
 - [VS Code](https://code.visualstudio.com/) (optional) for diff/merge tool integration and the workspace file
 - [Git LFS](https://git-lfs.com/) (optional) for large file support
 - A [Nerd Font](https://www.nerdfonts.com/) for powerline glyphs and icons
@@ -61,15 +73,17 @@ cd winget && ./install.sh
 
 ## Structure
 
-Each configuration module is organized in its own directory with:
+Each configuration module is organized in its own directory with its configuration, installer, and README. Platform support varies by module:
 
-- Configuration files (dotfiles)
-- Installation scripts:
-  - `install.sh` — Linux/macOS/WSL (Bash)
-  - `install.ps1` — Windows PowerShell
-- Documentation (`README.md`)
+| Module | Bash | PowerShell | Installation method |
+|--------|------|------------|---------------------|
+| Git | ✅ | ✅ | Symlink; PowerShell falls back to copying |
+| Shell | ✅ | — | Adds or updates `source` lines in shell rc files |
+| Oh My Posh | ✅ | ✅ | Installs the tool and adds prompt initialization |
+| Copilot statusline | ✅ | ✅ | Copies renderer files and updates Copilot CLI settings |
+| WinGet | Guidance only | ✅ | Installs the App Installer bundle when needed |
 
-Installation scripts use `set -euo pipefail` for strict error handling, back up existing configs (with timestamps) before creating symbolic links, and skip re-linking if already configured. On Windows, scripts fall back to file copying if symbolic links are unavailable.
+Bash installers use strict error handling where appropriate. Installers preserve existing configuration before replacing or updating it; see each module README for exact backup behavior.
 
 ## Features
 
@@ -86,13 +100,13 @@ Full Git setup including user settings, editor integration (VS Code), and workfl
 | `ca` | commit -a | `cm` | commit -m |
 | `cam` | commit -am | `cp` | cherry-pick |
 | `df` | diff | `dc` | diff --cached |
-| `lg` | log --oneline --graph | `ls` | log --stat |
+| `lg` | log --oneline --decorate --all --graph | `ls` | log --stat |
 | `pu` | push | `pl` | pull |
 | `rb` | rebase | `rs` | reset |
 | `sh` | stash | `sm` | submodule |
 | `unstage` | reset HEAD -- | `last` | log -1 HEAD |
 
-- **`clearOldBranches`** — Cleans up local branches deleted from remote (switches to main, prunes, deletes "gone" branches)
+- **`clearOldBranches`** — Switches to `main`, prunes `origin`, and force-deletes local branches whose upstream is gone
 
 ### Shell Functions
 
@@ -120,6 +134,8 @@ An Oh My Posh-powered statusline for [GitHub Copilot CLI](https://docs.github.co
 - Session duration
 - Line changes (+added/-removed)
 
+The installer backs up existing Copilot CLI settings, preserves unrelated settings, and enables the experimental `STATUS_LINE` feature.
+
 Based on [Scott Hanselman's gist](https://gist.github.com/shanselman/9623ac74888a07ba82f63f5310fda11b).
 
 ## VS Code Integration
@@ -129,7 +145,7 @@ Open `dotfiles.code-workspace` in VS Code for:
 - Automatic shell configuration loading via `BASH_ENV`
 - Integrated terminal with all dotfiles functions pre-loaded
 - Build task to reload dotfiles (`Load Dotfiles`)
-- GitHub Copilot and MCP server configuration
+- GitHub Copilot workspace settings and MCP server configuration (`.mcp.json` and `.vscode/mcp.json`)
 - GitHub Issues queries pre-configured
 
 ## Dev Container / Codespaces
@@ -138,7 +154,7 @@ The `.devcontainer/devcontainer.json` enables:
 
 - **Ubuntu 24.04** base image with Git, GitHub CLI, Node.js, and PowerShell (`pwsh`) pre-installed
 - **240-minute idle timeout** for Codespaces (vs. the 30-minute default)
-- **GitHub Copilot CLI** (`copilot`) and **Squad CLI** (`squad`) installed globally via `postCreateCommand`
+- **GitHub Copilot CLI** (`@github/copilot`) and **Squad CLI** (`@bradygaster/squad-cli`) installed globally via `postCreateCommand`
 - Automatic dotfiles installation via `postCreateCommand`
 
 Open this repo in a Codespace or VS Code Dev Container and everything is configured automatically.
@@ -160,6 +176,12 @@ Open this repo in a Codespace or VS Code Dev Container and everything is configu
 3. Add a `README.md` describing the module
 4. Register the module in both root `install.sh` and `install.ps1`
 5. Update this README to document the new module
+
+## More Documentation
+
+- [Documentation index](docs/README.md)
+- [Syncing a repository created from this template](SYNCING.md)
+- [Security policy](SECURITY.md)
 
 ## License
 
