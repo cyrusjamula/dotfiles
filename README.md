@@ -153,12 +153,15 @@ Open `dotfiles.code-workspace` in VS Code for:
 
 The `.devcontainer/devcontainer.json` enables:
 
-- **Ubuntu 24.04** base image with Git, GitHub CLI, Node.js, and PowerShell (`pwsh`) pre-installed
+- **Ubuntu 24.04** base image with Git, GitHub CLI, the latest LTS Node.js, and stable PowerShell (`pwsh`) pre-installed
 - **240-minute idle timeout** for Codespaces (vs. the 30-minute default)
+- **Squad CLI** installed locally from `package-lock.json` via `npm ci` (available as `npx squad`)
 - **GitHub Copilot CLI** (`@github/copilot`) installed globally via `postCreateCommand`
 - Automatic dotfiles installation via `postCreateCommand`
 
 Open this repo in a Codespace or VS Code Dev Container and everything is configured automatically.
+
+Rebuild an existing container to apply configuration changes and refresh the installed tools.
 
 ## Copilot Integration
 
@@ -169,6 +172,8 @@ The repository includes shared automation configuration:
 - `.github/skills/` contains reusable Copilot skills.
 
 Review MCP commands before running them and provide credentials only through environment variables or password inputs; do not write tokens into committed configuration.
+
+Run the focused Squad routing and mesh sync regressions with `node --test tests/*.test.cjs` (requires Bash).
 
 ## Platform Support
 

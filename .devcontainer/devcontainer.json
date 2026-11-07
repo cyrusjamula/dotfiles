@@ -4,12 +4,14 @@
   "features": {
     "ghcr.io/devcontainers/features/git:1": {},
     "ghcr.io/devcontainers/features/github-cli:1": {},
-    "ghcr.io/devcontainers/features/node:2": {},
+    "ghcr.io/devcontainers/features/node:2": {
+      "version": "lts"
+    },
     "ghcr.io/devcontainers/features/powershell:2": {
-      "version": "7.6.9"
+      "version": "stable"
     }
   },
-  "postCreateCommand": "npm install -g @github/copilot && ./install.sh",
+  "postCreateCommand": "npm ci && npm install -g @github/copilot && ./install.sh",
   "customizations": {
     "vscode": {
       "settings": {
