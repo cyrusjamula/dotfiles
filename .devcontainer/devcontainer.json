@@ -9,7 +9,7 @@
       "version": "7.6.9"
     }
   },
-  "postCreateCommand": "npm install -g @github/copilot @bradygaster/squad-cli@latest && ./install.sh",
+  "postCreateCommand": "npm install -g @github/copilot && ./install.sh",
   "customizations": {
     "vscode": {
       "settings": {

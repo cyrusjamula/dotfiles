@@ -31,14 +31,9 @@ After installing, create a `.templatesyncignore` at your repo root to protect yo
 ```gitignore
 # Personal config — never overwrite
 git/.gitconfig
-.squad/config.json
 .vscode/settings.json
 # Local Copilot CLI settings
 .copilot/mcp-config.json
-# Generated/transient
-.squad/casting/
-.squad/identity/
-.squad/decisions.md
 ```
 
 See [the example workflow](docs/examples/template-sync.yml) for full options (schedule, target branch, PR labels, etc.).
@@ -93,7 +88,7 @@ Upstream changes typically fall into three buckets:
 |---|---|---|
 | **Shared infra** | `install.sh`, `install.ps1`, module installers, workflows | Usually safe to accept as-is |
 | **Defaults** | `git/.gitconfig`, `ohmyposh/theme.omp.json`, shell functions | Review for conflicts with your personal tweaks |
-| **Personal config** | `.squad/config.json`, `.vscode/settings.json`, anything you've edited | Add to `.templatesyncignore` or resolve manually |
+| **Personal config** | `.vscode/settings.json`, `.copilot/mcp-config.json`, anything you've edited | Add to `.templatesyncignore` or resolve manually |
 
 ## Resolving Conflicts
 
