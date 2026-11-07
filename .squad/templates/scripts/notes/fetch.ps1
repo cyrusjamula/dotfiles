@@ -53,7 +53,7 @@ if ($Setup) {
 
 # ── Fetch notes ─────────────────────────────────────────────────────────────
 Log "Fetching notes from $Remote..."
-$output = git -C $repo fetch $Remote $trackingRefspec 2>&1
+$output = git -C $repo fetch --refmap= $Remote $trackingRefspec 2>&1
 if ($LASTEXITCODE -ne 0) {
     Write-Error "Failed to fetch notes from ${Remote}: $output"
     exit 1

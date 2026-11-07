@@ -126,7 +126,7 @@ Or use the helper script:
 
 ```bash
 git config --add remote.origin.fetch '+refs/notes/squad/*:refs/notes/remotes/origin/squad/*'
-git fetch origin '+refs/notes/squad/*:refs/notes/remotes/origin/squad/*'
+git fetch --refmap= origin '+refs/notes/squad/*:refs/notes/remotes/origin/squad/*'
 ```
 
 Or use the helper:
@@ -150,7 +150,7 @@ Or use the helper:
 2. **Same agent, two machines:** First push wins. Losing machine should fetch
    and merge before appending:
    ```bash
-   git fetch origin '+refs/notes/squad/*:refs/notes/remotes/origin/squad/*'
+   git fetch --refmap= origin '+refs/notes/squad/*:refs/notes/remotes/origin/squad/*'
    git notes --ref=squad/{agent} merge -s cat_sort_uniq refs/notes/remotes/origin/squad/{agent}
    git notes --ref=squad/{agent} append -m '{...}' HEAD
    git push origin 'refs/notes/squad/*:refs/notes/squad/*'
@@ -161,7 +161,7 @@ Or use the helper:
 
 4. **Push conflict recovery:**
    ```bash
-   git fetch origin '+refs/notes/squad/*:refs/notes/remotes/origin/squad/*'
+   git fetch --refmap= origin '+refs/notes/squad/*:refs/notes/remotes/origin/squad/*'
    git notes --ref=squad/{namespace} merge -s cat_sort_uniq refs/notes/remotes/origin/squad/{namespace}
    git push origin 'refs/notes/squad/*:refs/notes/squad/*'
    ```

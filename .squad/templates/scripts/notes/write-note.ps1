@@ -121,11 +121,11 @@ if (-not $NoPush) {
             if ($i -eq $maxRetries - 1) {
                 Write-Warning "Failed after $maxRetries retries. Push manually: git push origin '${nsRef}:${nsRef}'"
             }
-            if (-not $pushed) {
-                Write-Error "Failed to push notes after $maxRetries attempts; local notes were preserved."
-                exit 1
-            }
         }
+    }
+    if (-not $pushed) {
+        Write-Error "Failed to push notes after $maxRetries attempts; local notes were preserved."
+        exit 1
     }
 }
 

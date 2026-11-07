@@ -18,6 +18,36 @@ function runScript(repo, name, ...args) {
     { env: gitEnv, encoding: 'utf8' });
 }
 
+function runWithPushFailures(repo, mode, attemptsFile) {
+  const command = `
+$global:NativeGit = (Get-Command git -CommandType Application | Select-Object -First 1).Source
+function global:git {
+  if ($args -contains 'push') {
+    Add-Content -LiteralPath $env:NOTES_ATTEMPTS -Value 'push'
+    $attempts = @(Get-Content -LiteralPath $env:NOTES_ATTEMPTS).Count
+    if ($env:NOTES_FAILURE -ne 'recover' -or $attempts -le 2) {
+      if ($env:NOTES_FAILURE -eq 'rejected') {
+        Write-Output '[rejected] simulated non-fast-forward'
+      } else {
+        Write-Output 'simulated transient transport failure'
+      }
+      $global:LASTEXITCODE = 1
+      return
+    }
+  }
+  & $global:NativeGit @args
+}
+function global:Start-Sleep { param([double]$Seconds) }
+& $env:NOTES_SCRIPT -RepoPath $env:NOTES_REPO -Agent test -Type decision -Content '{"decision":"pending"}' -Quiet
+exit $LASTEXITCODE
+`;
+  return spawnSync('pwsh', ['-NoProfile', '-Command', command], {
+    env: { ...gitEnv, NOTES_SCRIPT: path.join(scripts, 'write-note.ps1'),
+      NOTES_REPO: repo, NOTES_FAILURE: mode, NOTES_ATTEMPTS: attemptsFile },
+    encoding: 'utf8',
+  });
+}
+
 function success(result) {
   assert.equal(result.status, 0, result.stderr || result.stdout);
 }
@@ -101,6 +131,60 @@ test('Notes_Setup_MigratesUnsafeRefspecAndImportsAllNamespaces', () => {
     fs.rmSync(f.directory, { recursive: true, force: true });
   }
 });
+
+for (const [name, mapping] of [
+  ['Legacy', 'refs/notes/*:refs/notes/*'],
+  ['ForcedLegacy', '+refs/notes/*:refs/notes/*'],
+]) {
+  test(`Notes_NormalWrite_${name}MappingPreservesPendingNotes`, () => {
+    const f = fixture();
+    try {
+      git(f.peer, 'notes', '--ref=squad/test', 'add', '-m', '{"decision":"remote"}', 'HEAD');
+      git(f.peer, 'push', 'origin', 'refs/notes/squad/test');
+      git(f.local, 'notes', '--ref=squad/test', 'add', '-m', '{"decision":"pending"}', 'HEAD');
+      git(f.local, 'config', '--add', 'remote.origin.fetch', mapping);
+      success(runScript(f.local, 'write-note.ps1', '-Agent', 'test', '-Type', 'decision',
+        '-Content', '{"decision":"new"}', '-NoPush'));
+      assert.deepEqual(decisions(f.local), ['new', 'pending', 'remote']);
+      assert.equal(git(f.local, 'rev-parse', 'refs/notes/remotes/origin/squad/test'),
+        git(f.peer, 'rev-parse', 'refs/notes/squad/test'));
+      assert.ok(git(f.local, 'config', '--get-all', 'remote.origin.fetch').split('\n').includes(mapping));
+    } finally {
+      fs.rmSync(f.directory, { recursive: true, force: true });
+    }
+  });
+}
+
+test('Notes_TransientPushFailure_RetriesAndPublishes', () => {
+  const f = fixture();
+  try {
+    const attemptsFile = path.join(f.directory, 'attempts.txt');
+    success(runWithPushFailures(f.local, 'recover', attemptsFile));
+    assert.equal(fs.readFileSync(attemptsFile, 'utf8').trim().split(/\r?\n/).length, 3);
+    assert.deepEqual(decisions(f.local), ['pending']);
+    git(f.peer, 'fetch', 'origin', '+refs/notes/squad/test:refs/notes/squad/test');
+    assert.deepEqual(decisions(f.peer), ['pending']);
+  } finally {
+    fs.rmSync(f.directory, { recursive: true, force: true });
+  }
+});
+
+for (const mode of ['transport', 'rejected']) {
+  test(`Notes_ExhaustedPush_${mode}_FailsAfterFiveAttempts`, () => {
+    const f = fixture();
+    try {
+      const attemptsFile = path.join(f.directory, 'attempts.txt');
+      const result = runWithPushFailures(f.local, mode, attemptsFile);
+      assert.equal(result.status, 1, result.stderr || result.stdout);
+      assert.equal(fs.readFileSync(attemptsFile, 'utf8').trim().split(/\r?\n/).length, 5);
+      assert.deepEqual(decisions(f.local), ['pending']);
+      assert.match(result.stderr, /Failed to push notes after 5 attempts; local notes were preserved/);
+      assert.equal(git(f.peer, 'ls-remote', 'origin', 'refs/notes/squad/*'), '');
+    } finally {
+      fs.rmSync(f.directory, { recursive: true, force: true });
+    }
+  });
+}
 
 test('Notes_FetchFailure_DoesNotAppendOrDiscardLocalNotes', () => {
   const f = fixture();
