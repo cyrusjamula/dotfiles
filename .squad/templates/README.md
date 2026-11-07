@@ -49,8 +49,8 @@ After the agent's own files are seeded, these templates are not read again at ru
 | `fact-checker-charter.md` | `agents/fact-checker/charter.md` |
 | `fact-checker-policy.md` | `agents/fact-checker/policy.md` (Fact Checker methodology) |
 | `history.md` | New agent `history.md` when a team member is added |
-| `rai-charter.md` | `agents/Rai/charter.md` |
-| `rai-policy.md` | `agents/Rai/policy.md` (RAI check taxonomy) |
+| `rai-charter.md` | `agents/rai/charter.md` |
+| `rai-policy.md` | `agents/rai/policy.md` (RAI check taxonomy) |
 | `roster.md` | Roster entry format guidance for `team.md` |
 | `run-output.md` | Standard run output format for agent responses |
 | `scribe-charter.md` | `agents/scribe/charter.md` |
@@ -75,6 +75,16 @@ wholesale — each has a distinct consumer.
 | `scripts/` | User copy-source | Documented for users to copy from — `cp -r .squad/templates/scripts/notes/ scripts/notes/` (see the state-backends doc). |
 | `skills/` | Bootstrap template | Source for skills the `TEMPLATE_MANIFEST` installs **to `.github/skills/`** (destinations are `../.github/skills/...`). The installed copy under `.github/skills/` is what agents load. |
 | `workflows/` | User copy-source | Documented for users to copy from — `cp .squad/templates/workflows/*.yml .github/workflows/` (see the CI/CD integration doc). |
+
+The bundled `squad-promote.yml` and `squad-release.yml` form a pair: after a
+successful non-dry-run push to `main`, promotion explicitly dispatches the release
+workflow in the same repository with `--ref main`. Only the main-promotion job
+needs `actions: write` in addition to `contents: write`, since `GITHUB_TOKEN`
+pushes do not trigger push workflows. When adopting these templates, install the
+dispatch-enabled release workflow on the repository's default branch (required
+by GitHub for manual dispatch) and on `main` (the dispatched workflow ref).
+Releases still run automatically for ordinary pushes to `main`; manual dispatches
+on other refs skip the release job. These bundled files are not active workflows.
 
 ---
 

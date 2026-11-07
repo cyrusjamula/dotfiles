@@ -125,20 +125,20 @@ Or use the helper script:
 ### One-time setup
 
 ```bash
-git config --add remote.origin.fetch 'refs/notes/*:refs/notes/*'
-git fetch origin 'refs/notes/*:refs/notes/*'
+git config --add remote.origin.fetch '+refs/notes/squad/*:refs/notes/remotes/origin/squad/*'
+git fetch --refmap= origin '+refs/notes/squad/*:refs/notes/remotes/origin/squad/*'
 ```
 
 Or use the helper:
 
 ```powershell
-./scripts/notes/fetch.ps1 -Setup
+./scripts/notes/fetch.ps1 -Setup -Merge
 ```
 
 ### Every work round
 
-1. **Start**: `git fetch origin 'refs/notes/*:refs/notes/*'`
-2. **End**: `git push origin 'refs/notes/*:refs/notes/*'`
+1. **Start**: `./scripts/notes/fetch.ps1 -Merge` to fetch tracking refs and merge them without overwriting pending local notes.
+2. **End**: `git push origin 'refs/notes/squad/*:refs/notes/squad/*'` (never push remote-tracking notes).
 
 ---
 
@@ -148,11 +148,12 @@ Or use the helper:
    `refs/notes/squad/data`, so there are no write conflicts in normal use.
 
 2. **Same agent, two machines:** First push wins. Losing machine should fetch
-   and append:
+   and merge before appending:
    ```bash
-   git fetch origin 'refs/notes/*:refs/notes/*'
+   git fetch --refmap= origin '+refs/notes/squad/*:refs/notes/remotes/origin/squad/*'
+   git notes --ref=squad/{agent} merge -s cat_sort_uniq refs/notes/remotes/origin/squad/{agent}
    git notes --ref=squad/{agent} append -m '{...}' HEAD
-   git push origin 'refs/notes/*:refs/notes/*'
+   git push origin 'refs/notes/squad/*:refs/notes/squad/*'
    ```
 
 3. **Shared namespaces** (`research`, `review`): Always use `git notes append`,
@@ -160,9 +161,9 @@ Or use the helper:
 
 4. **Push conflict recovery:**
    ```bash
-   git fetch origin 'refs/notes/*:refs/notes/*'
-   git notes merge refs/notes/remotes/origin/squad/{namespace}
-   git push origin 'refs/notes/*:refs/notes/*'
+   git fetch --refmap= origin '+refs/notes/squad/*:refs/notes/remotes/origin/squad/*'
+   git notes --ref=squad/{namespace} merge -s cat_sort_uniq refs/notes/remotes/origin/squad/{namespace}
+   git push origin 'refs/notes/squad/*:refs/notes/squad/*'
    ```
 
 ---
