@@ -51,18 +51,18 @@ jobs:
               const needsReviewMatch = content.match(/🟡\s*Needs review[^:]*:\s*(.+)/i);
               const notSuitableMatch = content.match(/🔴\s*Not suitable[^:]*:\s*(.+)/i);
 
-              if (goodFitMatch) {
-                goodFitKeywords = goodFitMatch[1].toLowerCase().split(',').map(s => s.trim());
+              if (goodFitMatch && /[a-z0-9]/i.test(goodFitMatch[1])) {
+                goodFitKeywords = goodFitMatch[1].replace(/[*_`]/g, '').toLowerCase().split(',').map(s => s.trim()).filter(Boolean);
               } else {
                 goodFitKeywords = ['bug fix', 'test coverage', 'lint', 'format', 'dependency update', 'small feature', 'scaffolding', 'doc fix', 'documentation'];
               }
-              if (needsReviewMatch) {
-                needsReviewKeywords = needsReviewMatch[1].toLowerCase().split(',').map(s => s.trim());
+              if (needsReviewMatch && /[a-z0-9]/i.test(needsReviewMatch[1])) {
+                needsReviewKeywords = needsReviewMatch[1].replace(/[*_`]/g, '').toLowerCase().split(',').map(s => s.trim()).filter(Boolean);
               } else {
                 needsReviewKeywords = ['medium feature', 'refactoring', 'api endpoint', 'migration'];
               }
-              if (notSuitableMatch) {
-                notSuitableKeywords = notSuitableMatch[1].toLowerCase().split(',').map(s => s.trim());
+              if (notSuitableMatch && /[a-z0-9]/i.test(notSuitableMatch[1])) {
+                notSuitableKeywords = notSuitableMatch[1].replace(/[*_`]/g, '').toLowerCase().split(',').map(s => s.trim()).filter(Boolean);
               } else {
                 notSuitableKeywords = ['architecture', 'system design', 'security', 'auth', 'encryption', 'performance'];
               }

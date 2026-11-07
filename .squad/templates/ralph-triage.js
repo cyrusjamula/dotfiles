@@ -484,6 +484,7 @@ function issueHasLabel(issue, labelName) {
 function isUntriagedIssue(issue, memberLabels) {
   if (issue.pull_request) return false;
   if (!issueHasLabel(issue, 'squad')) return false;
+  if (issueHasLabel(issue, 'squad:copilot')) return false;
   return !memberLabels.some((label) => issueHasLabel(issue, label));
 }
 
@@ -545,6 +546,7 @@ if (require.main === module) {
 }
 
 module.exports = {
+  isUntriagedIssue,
   parseModuleOwnership,
   parseRoster,
   parseRoutingRules,
