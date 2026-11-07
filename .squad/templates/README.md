@@ -76,6 +76,16 @@ wholesale — each has a distinct consumer.
 | `skills/` | Bootstrap template | Source for skills the `TEMPLATE_MANIFEST` installs **to `.github/skills/`** (destinations are `../.github/skills/...`). The installed copy under `.github/skills/` is what agents load. |
 | `workflows/` | User copy-source | Documented for users to copy from — `cp .squad/templates/workflows/*.yml .github/workflows/` (see the CI/CD integration doc). |
 
+The bundled `squad-promote.yml` and `squad-release.yml` form a pair: after a
+successful non-dry-run push to `main`, promotion explicitly dispatches the release
+workflow in the same repository with `--ref main`. Only the main-promotion job
+needs `actions: write` in addition to `contents: write`, since `GITHUB_TOKEN`
+pushes do not trigger push workflows. When adopting these templates, install the
+dispatch-enabled release workflow on the repository's default branch (required
+by GitHub for manual dispatch) and on `main` (the dispatched workflow ref).
+Releases still run automatically for ordinary pushes to `main`; manual dispatches
+on other refs skip the release job. These bundled files are not active workflows.
+
 ---
 
 ## Invariant

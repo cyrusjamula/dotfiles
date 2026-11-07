@@ -1,7 +1,6 @@
 const assert = require('node:assert/strict');
 const { execFileSync, spawnSync } = require('node:child_process');
 const fs = require('node:fs');
-const os = require('node:os');
 const path = require('node:path');
 const test = require('node:test');
 
@@ -24,7 +23,7 @@ function success(result) {
 }
 
 function fixture() {
-  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'dotfiles-notes-test-'));
+  const directory = fs.mkdtempSync(path.join(__dirname, 'notes-fixture-'));
   const remote = path.join(directory, 'remote');
   const local = path.join(directory, 'local');
   const peer = path.join(directory, 'peer');
@@ -86,12 +85,17 @@ test('Notes_Setup_MigratesUnsafeRefspecAndImportsAllNamespaces', () => {
       git(f.peer, 'push', 'origin', `refs/notes/squad/${agent}`);
     }
     git(f.local, 'config', '--add', 'remote.origin.fetch', 'refs/notes/*:refs/notes/*');
+    git(f.local, 'config', '--add', 'remote.origin.fetch', '+refs/notes/*:refs/notes/*');
+    git(f.local, 'notes', '--ref=squad/test', 'add', '-m', '{"decision":"pending"}', 'HEAD');
     success(runScript(f.local, 'fetch.ps1', '-Setup', '-Merge'));
     success(runScript(f.local, 'fetch.ps1', '-Setup', '-Merge'));
     const refspecs = git(f.local, 'config', '--get-all', 'remote.origin.fetch').split('\n');
     assert.equal(refspecs.includes('refs/notes/*:refs/notes/*'), false);
+    assert.equal(refspecs.includes('+refs/notes/*:refs/notes/*'), false);
     assert.equal(refspecs.filter(ref => ref === '+refs/notes/squad/*:refs/notes/remotes/origin/squad/*').length, 1);
-    assert.deepEqual(decisions(f.local), ['remote']);
+    assert.deepEqual(decisions(f.local), ['pending', 'remote']);
+    assert.equal(git(f.local, 'rev-parse', 'refs/notes/remotes/origin/squad/test'),
+      git(f.peer, 'rev-parse', 'refs/notes/squad/test'));
     assert.equal(JSON.parse(git(f.local, 'notes', '--ref=squad/other', 'show', 'HEAD')).decision, 'remote');
   } finally {
     fs.rmSync(f.directory, { recursive: true, force: true });
@@ -112,12 +116,35 @@ test('Notes_FetchFailure_DoesNotAppendOrDiscardLocalNotes', () => {
   }
 });
 
+test('Notes_FailedPush_NextWritePreservesPendingEntry', () => {
+  const f = fixture();
+  try {
+    git(f.local, 'config', 'remote.origin.pushurl', path.join(f.directory, 'missing-remote'));
+    const result = runScript(f.local, 'write-note.ps1', '-Agent', 'test', '-Type', 'decision',
+      '-Content', '{"decision":"pending"}');
+    assert.notEqual(result.status, 0);
+    assert.deepEqual(decisions(f.local), ['pending']);
+    assert.match(result.stderr, /local notes were preserved/);
+
+    git(f.peer, 'notes', '--ref=squad/test', 'add', '-m', '{"decision":"remote"}', 'HEAD');
+    git(f.peer, 'push', 'origin', 'refs/notes/squad/test');
+    git(f.local, 'config', '--unset', 'remote.origin.pushurl');
+    success(runScript(f.local, 'write-note.ps1', '-Agent', 'test', '-Type', 'decision',
+      '-Content', '{"decision":"next"}'));
+    assert.deepEqual(decisions(f.local), ['next', 'pending', 'remote']);
+    git(f.peer, 'fetch', 'origin', '+refs/notes/squad/test:refs/notes/squad/test');
+    assert.deepEqual(decisions(f.peer), ['next', 'pending', 'remote']);
+  } finally {
+    fs.rmSync(f.directory, { recursive: true, force: true });
+  }
+});
+
 test('Notes_InvalidJson_DoesNotEchoPayload', () => {
   const f = fixture();
   try {
     const result = runScript(f.local, 'write-note.ps1', '-Agent', 'test', '-Type', 'decision',
       '-Content', 'invalid-payload-marker', '-NoPush');
-    assert.notEqual(result.status, 0);
+    assert.equal(result.status, 1);
     assert.match(result.stderr, /Content must be valid JSON/);
     assert.equal((result.stdout + result.stderr).includes('invalid-payload-marker'), false);
   } finally {
