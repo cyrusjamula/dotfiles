@@ -1,7 +1,16 @@
+---
+name: "squad-version-check"
+description: "Internals of how @bradygaster/squad-cli stamps its version, how `squad upgrade` works (what it preserves vs overwrites), and how to probe the npm registry for the latest version from a coordinator prompt."
+allowedTools: []
+confidence: medium
+domain: squad-internals
+source: "validated in bradygaster/squad#1173 recon (2026-05-26)."
+---
+
 # SKILL: Squad CLI Internals — Version Stamping & Upgrade Mechanics
 
 **Confidence:** medium
-**Discovered by:** Data
+**Discovered by:** repository investigation
 **Date:** 2026-05-26
 **Validated in:** Issue #1173 recon (bradygaster/squad)
 
