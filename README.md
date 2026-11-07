@@ -12,8 +12,7 @@ Personal dotfiles repository to consolidate settings and configurations across L
 | [`copilot-statusline/`](copilot-statusline/) | Oh My Posh-powered Copilot CLI statusline |
 | [`winget/`](winget/) | WinGet bootstrap for Windows |
 | [`.devcontainer/`](.devcontainer/) | Dev Container and Codespaces configuration |
-| [`.copilot/`](.copilot/) | Copilot CLI MCP example and reusable skills |
-| [`.squad/`](.squad/) | Squad configuration, team state, and templates |
+| [`.copilot/`](.copilot/) | Copilot CLI MCP example |
 | [`docs/`](docs/) | Documentation index and reusable examples |
 
 ## Quick Start
@@ -156,20 +155,18 @@ The `.devcontainer/devcontainer.json` enables:
 
 - **Ubuntu 24.04** base image with Git, GitHub CLI, Node.js, and PowerShell (`pwsh`) pre-installed
 - **240-minute idle timeout** for Codespaces (vs. the 30-minute default)
-- **GitHub Copilot CLI** (`@github/copilot`) and **Squad CLI** (`@bradygaster/squad-cli`) installed globally via `postCreateCommand`
+- **GitHub Copilot CLI** (`@github/copilot`) installed globally via `postCreateCommand`
 - Automatic dotfiles installation via `postCreateCommand`
 
 Open this repo in a Codespace or VS Code Dev Container and everything is configured automatically.
 
-## Copilot and Squad Automation
+## Copilot Integration
 
 The repository includes shared automation configuration:
 
 - `.mcp.json` and `.vscode/mcp.json` configure MCP servers for compatible clients.
 - `.copilot/mcp-config.json` is an example Copilot CLI MCP configuration that reads `GITHUB_TOKEN` from the environment.
-- `.copilot/skills/` contains reusable Copilot skills.
-- `.squad/` contains Squad team configuration, routing, templates, and local coordination state.
-- `scripts/ralph-triage.js` forwards to Squad's Ralph triage utility.
+- `.github/skills/` contains reusable Copilot skills.
 
 Review MCP commands before running them and provide credentials only through environment variables or password inputs; do not write tokens into committed configuration.
 
