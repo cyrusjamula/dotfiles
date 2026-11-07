@@ -173,7 +173,7 @@ The repository includes shared automation configuration:
 
 Review MCP commands before running them and provide credentials only through environment variables or password inputs; do not write tokens into committed configuration.
 
-Run the focused Squad routing regressions with `node --test tests/squad-triage.test.cjs`.
+Run the focused Squad routing and mesh sync regressions with `node --test tests/*.test.cjs` (requires Bash).
 
 ## Platform Support
 
